@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/apps/">
-    <Project Path="Booking.API/Booking.API.csproj" />
-    <Project Path="Notification.Worker/Notification.Worker.csproj" />
+    <Project Path="apps/Booking.API/Booking.API.csproj" />
+    <Project Path="apps/Notification.Worker/Notification.Worker.csproj" />
   </Folder>
   <Folder Name="/Documentacion/">
     <File Path="Estructura.txt" />
@@ -11,16 +11,16 @@
     <File Path="docker-compose.yml" />
   </Folder>
   <Folder Name="/shared/">
-    <Project Path="TicketFlow.Shared/TicketFlow.Shared.csproj" />
+    <Project Path="shared/TicketFlow.Shared/TicketFlow.Shared.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="Booking.Application/Booking.Application.csproj" />
-    <Project Path="Booking.Domain/Booking.Domain.csproj" />
-    <Project Path="Booking.Infrastructure/Booking.Infrastructure.csproj" />
-    <Project Path="Notification.Infrastructure/Notification.Infrastructure.csproj" />
+    <Project Path="src/Booking.Application/Booking.Application.csproj" />
+    <Project Path="src/Booking.Domain/Booking.Domain.csproj" />
+    <Project Path="src/Booking.Infrastructure/Booking.Infrastructure.csproj" />
+    <Project Path="src/Notification.Infrastructure/Notification.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="Booking.UnitTests/Booking.UnitTests.csproj" />
-    <Project Path="Notification.Tests/Notification.Tests.csproj" />
+    <Project Path="tests/Booking.UnitTests/Booking.UnitTests.csproj" />
+    <Project Path="tests/Notification.Tests/Notification.Tests.csproj" />
   </Folder>
 </Solution>
