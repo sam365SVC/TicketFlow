@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/apps/">
+    <Project Path="Booking.API/Booking.API.csproj" />
+    <Project Path="Notification.Worker/Notification.Worker.csproj" />
+  </Folder>
+  <Folder Name="/Documentacion/">
+    <File Path="Estructura.txt" />
+    <File Path="EstructuraSrc.txt" />
+  </Folder>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/shared/">
+    <Project Path="TicketFlow.Shared/TicketFlow.Shared.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="Booking.Application/Booking.Application.csproj" />
+    <Project Path="Booking.Domain/Booking.Domain.csproj" />
+    <Project Path="Booking.Infrastructure/Booking.Infrastructure.csproj" />
+    <Project Path="Notification.Infrastructure/Notification.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="Booking.UnitTests/Booking.UnitTests.csproj" />
+    <Project Path="Notification.Tests/Notification.Tests.csproj" />
+  </Folder>
+</Solution>

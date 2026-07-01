@@ -1,0 +1,64 @@
+🧠 1. Booking.Domain (El Corazón del Negocio)
+Es la capa más importante. Aquí solo hay código C# puro (clases e interfaces). No hay nada de Entity Framework, ni de AWS, ni de bases de datos. Si el banco decide cambiar de SQL Server a Oracle, esta capa no se toca.
+
+📁 Entities/ (Entidades)
+Qué hace: Aquí creas las clases principales que representan el negocio de entradas. Pero ojo, no son solo contenedores de datos con get; set;. Tienen que validar las reglas de negocio.
+
+Ejemplo: Dentro de Reserva.cs, tienes un método llamado ConfirmarPago(). Ese método cambia el estado a "Confirmado" solo si la reserva no ha expirado. El negocio vive aquí.
+
+📁 Exceptions/ (Excepciones del Dominio)
+Qué hace: Almacena los errores específicos que tú inventas para el negocio.
+
+Ejemplo: Si un usuario quiere comprar 11 entradas y el banco solo permite un máximo de 10 por persona, disparas un MaxTicketsExceededException.cs. Esto evita usar errores genéricos del sistema.
+
+📁 Repositories/ (Interfaces de Repositorio)
+Qué hace: Guarda únicamente las interfaces (interface). Son contratos que dicen qué necesita el dominio, pero no cómo se hace.
+
+Ejemplo: IBookingRepository.cs tendrá la firma Task Guardar(Reserva reserva);. El dominio sabe que necesita guardar la reserva, pero no le importa si se guarda en SQL, en un archivo de texto o en la nube.
+
+⚙️ 2. Booking.Application (Los Casos de Uso / El Orquestador)
+Esta capa no define las reglas del negocio, sino que orquesta las acciones del sistema. Es el puente entre la API (el mundo exterior) y el Dominio.
+
+📁 Commands/ (Comandos y Controladores de Acción)
+Qué hace: Clases que representan una "orden" o intención del usuario para cambiar el estado del sistema, junto con su manejador (Handler).
+
+Ejemplo: CrearReservaCommand.cs viaja con los datos que mandó el cliente (Id del evento, cantidad de asientos). Su Handler asociado toma ese comando, busca el evento en el repositorio, le dice al dominio "crea la reserva", y luego guarda el resultado.
+
+📁 Dtos/ (Data Transfer Objects)
+Qué hace: Clases planas (en .NET 10 usen record) que sirven exclusivamente para dar formato a los datos que entran o salen del sistema. Protegen a tus entidades de dominio para no exponerlas directamente a internet.
+
+Ejemplo: EventoDto.cs solo expone el Nombre y la Fecha para mostrar en la pantalla del usuario, ocultando campos internos como costos de auditoría o IDs de base de datos.
+
+📁 Services/ (Servicios de Aplicación)
+Qué hace: Lógica que necesita interactuar con servicios externos antes de aplicar el negocio.
+
+Ejemplo: Un servicio que verifique si el usuario tiene una sesión activa o que prepare los datos del evento antes de pasárselos al comando.
+
+💾 3. Booking.Infrastructure (La Tecnología de Booking)
+Aquí se escribe el código pesado que interactúa con la tecnología real. Esta capa sí conoce bases de datos, librerías externas y frameworks. Aquí es donde se implementa lo que el Dominio pidió.
+
+📁 Data/ (Contexto de Base de Datos)
+Qué hace: Aquí configuras Entity Framework Core.
+
+Ejemplo: El archivo ApplicationDbContext.cs. Aquí mapeas tus entidades (Reserva.cs, Evento.cs) a las tablas reales de tu base de datos SQL. También aquí corren las migraciones para crear las tablas en Docker.
+
+📁 Repositories/ (Implementación de Repositorios)
+Qué hace: Aquí se escribe el código real de las interfaces que dejaste vacías en el Dominio.
+
+Ejemplo: Creas BookingRepository.cs que hereda de IBookingRepository. Adentro escribes el código de Entity Framework: _context.Reservas.AddAsync(reserva);. ¡Aquí es donde la magia de guardar en SQL ocurre!
+
+☁️ 4. Notification.Infrastructure (La Tecnología del Worker)
+Es la capa de infraestructura pero exclusiva para el segundo microservicio (el Worker). Como este servicio maneja otras tecnologías, las separamos aquí.
+
+📁 Mongo/ (Persistencia NoSQL)
+Qué hace: Toda la configuración para conectarse a MongoDB.
+
+Ejemplo: MongoDbContext.cs. Escribe la lógica para conectarse a la base de datos NoSQL e insertar documentos rápidos (como el historial de transacciones o recibos emitidos), que no necesitan una estructura rígida de SQL.
+
+📁 Aws/ (Servicios de Nube)
+Qué hace: Almacena los servicios que usan el SDK oficial de AWS.
+
+Ejemplo: S3StorageService.cs. Contiene el código que toma el PDF o texto del ticket generado, se conecta con las credenciales de AWS y lo sube a un contenedor de Amazon S3.
+
+💡 Resumen del flujo de trabajo para ustedes dos:
+Cuando el Dev A programe la API de Reservas, empezará creando las clases en Booking.Domain/Entities, luego definirá el contrato en Booking.Domain/Repositories, lo orquestará en Booking.Application/Commands y finalmente escribirá el acceso a la base de datos en Booking.Infrastructure/Repositories.

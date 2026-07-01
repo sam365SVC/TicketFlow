@@ -1,0 +1,45 @@
+TicketFlow/                     <-- Carpeta raíz de la solución
+│
+├── TicketFlow.sln               <-- Archivo de solución de .NET
+├── docker-compose.yml           <-- Levanta SQL Server, MongoDB y RabbitMQ
+│
+├── 📂 apps/                     <-- Proyectos ejecutables
+│   │
+│   ├── 📁 Booking.API/          <-- MICROSERVICIO A: REST API (Dev A)
+│   │   ├── 📁 Controllers/      <-- Endpoints HTTP (GET /eventos, POST /reservas)
+│   │   ├── Program.cs           <-- Configuración de DI, Swagger, JWT y MassTransit
+│   │   └── appsettings.json
+│   │
+│   └── 📁 Notification.Worker/   <-- MICROSERVICIO B: Background Service (Dev B)
+│       ├── 📁 Consumers/        <-- Escucha el evento "ReservaCreadaEvent"
+│       ├── Worker.cs            <-- El servicio que corre en segundo plano en .NET
+│       ├── Program.cs           <-- Configuración de Mongo, SDK de AWS y MassTransit
+│       └── appsettings.json
+│
+├── 📂 src/                      <-- Capas de Lógica de Negocio (DDD)
+│   │
+│   ├── 📁 Booking.Domain/       <-- El corazón de Booking (SOLID / No dependencias)
+│   │   ├── 📁 Entities/         <-- Evento.cs, Reserva.cs, Asiento.cs
+│   │   ├── 📁 Exceptions/       <-- ReservaDomainException.cs
+│   │   └── 📁 Repositories/     <-- IBookingRepository.cs (Interfaces)
+│   │
+│   ├── 📁 Booking.Application/  <-- Casos de uso de Booking
+│   │   ├── 📁 Commands/         <-- CrearReservaCommand.cs
+│   │   ├── 📁 Dtos/             <-- EventoDto.cs
+│   │   └── 📁 Services/         <-- BookingAppService.cs
+│   │
+│   ├── 📁 Booking.Infrastructure/ <-- Implementación técnica de Booking
+│   │   ├── 📁 Data/             <-- ApplicationDbContext.cs (EF Core)
+│   │   └── 📁 Repositories/     <-- BookingRepository.cs (Implementación SQL)
+│   │
+│   └── 📁 Notification.Infrastructure/ <-- Infraestructura del Worker
+│       ├── 📁 Mongo/            <-- MongoDbContext.cs (Historial de transacciones)
+│       └── 📁 Aws/              <-- S3StorageService.cs (Subida del ticket)
+│
+├── 📂 shared/                   <-- Código compartido por ambos microservicios
+│   └── 📁 TicketFlow.Shared/    
+│       └── 📁 Events/           <-- Contratos de eventos: ReservaCreadaEvent.cs
+│
+└── 📂 tests/                    <-- PRUEBAS UNITARIAS (Muy valorado por el banco)
+    ├── 📁 Booking.UnitTests/    <-- Pruebas de la lógica de reserva (xUnit + Moq)
+    └── 📁 Notification.Tests/   <-- Pruebas del consumidor de eventos

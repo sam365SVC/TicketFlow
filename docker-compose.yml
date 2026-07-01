@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Base de Datos Relacional (Para Booking.API)
+  ticketflow-db:
+    image: postgres:16-alpine
+    container_name: ticketflow-postgres
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: YourSecurePassword123!
+      POSTGRES_DB: TicketFlow_Booking
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Base de Datos NoSQL (Para Notification.Worker)
+  ticketflow-nosql:
+    image: mongo:latest
+    container_name: ticketflow-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # Bus de Eventos (Comunicación Asíncrona)
+  ticketflow-bus:
+    image: rabbitmq:3-management-alpine
+    container_name: ticketflow-rabbitmq
+    ports:
+      - "5672:5672"   # Puerto de comunicación de datos
+      - "15672:15672" # Panel de control visual de RabbitMQ
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  postgres_data:
+  mongo_data:
