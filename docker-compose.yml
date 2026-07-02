@@ -22,6 +22,21 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+ 
+  notification-worker:
+    image: ticketflow-notification-worker
+    container_name: ticketflow-worker
+    build:
+      context: .  # Raíz de la solución para que Docker vea 'src' y 'shared'
+      dockerfile: apps/Notification.Worker/Dockerfile
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+      # CORREGIDO: Apunta al nombre del servicio 'ticketflow-nosql'
+      - ConnectionStrings__MongoConnection=mongodb://ticketflow-nosql:27017/TicketFlowDb
+    depends_on:
+      - ticketflow-nosql  # CORREGIDO: Nombre del servicio correspondiente
+    networks:
+      - ticketflow-network
 
   # Bus de Eventos (Comunicación Asíncrona)
   ticketflow-bus:
@@ -37,3 +52,7 @@ services:
 volumes:
   postgres_data:
   mongo_data:
+  
+networks:
+  ticketflow-network:
+    driver: bridge
