@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Base de Datos Relacional (Para Booking.API)
   ticketflow-db:
@@ -48,6 +46,19 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+
+  # API de Reservas (Booking.API)
+  booking-api:
+    build:
+      context: .
+      dockerfile: apps/Booking.API/Dockerfile
+    container_name: ticketflow-booking-api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      - ticketflow-db
 
 volumes:
   postgres_data:
