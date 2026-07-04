@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/apps/">
     <Project Path="apps/Booking.API/Booking.API.csproj" />
-    <Project Path="apps/Notification.Worker/Notification.Worker.csproj" />
   </Folder>
   <Folder Name="/Documentacion/">
     <File Path="Estructura.txt" />

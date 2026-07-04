@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Notification.Domain
+namespace Notification.Domain.Models
 {
     public class EmailNotification(string recipient, string subject, string body)
     {
