@@ -1,0 +1,56 @@
+﻿@model Notification.Domain.Models.ReservationEmailModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333333; line-height: 1.6; }
+        .header { color: #2c3e50; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+        .details-box { background-color: #f8f9fa; padding: 15px; border-left: 5px solid #3498db; margin: 20px 0; }
+        .ticket-list { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .ticket-list th, .ticket-list td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+        .btn-download { 
+            display: inline-block; padding: 8px 16px; background-color: #27ae60; 
+            color: #ffffff !important; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="header">Reservation Confirmed! 🎉</h1>
+    
+    <p>Hello @Model.CustomerName,</p>
+    <p>Your payment was successful. Here are the details of your event:</p>
+    
+    <div class="details-box">
+        <p><strong>Event:</strong> <span class="highlight">@Model.EventName</span></p>
+        <p><strong>Date:</strong> @Model.EventDate.ToString("dd/MM/yyyy HH:mm")</p>
+    </div>
+
+    <p>Here are your official tickets. You can download each one below:</p>
+    
+    <table class="ticket-list">
+        <thead>
+            <tr>
+                <th>Ticket Code</th>
+                <th>Zone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var ticket in Model.Tickets)
+            {
+                <tr>
+                    <td><strong>@ticket.TicketCode</strong></td>
+                    <td>@ticket.ZoneName</td>
+                    <td>
+                        <a href="@ticket.DownloadUrl" class="btn-download">Download</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <p><br>Enjoy the show!</p>
+</body>
+</html>
