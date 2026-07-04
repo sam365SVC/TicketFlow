@@ -17,6 +17,7 @@
     <Project Path="src/Booking.Application/Booking.Application.csproj" />
     <Project Path="src/Booking.Domain/Booking.Domain.csproj" />
     <Project Path="src/Booking.Infrastructure/Booking.Infrastructure.csproj" />
+    <Project Path="src/Notification.Domain/Notification.Domain.csproj" Id="b4e3ec24-b0b4-4aab-ad56-fca9b44eac13" />
     <Project Path="src/Notification.Infrastructure/Notification.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
