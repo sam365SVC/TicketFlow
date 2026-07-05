@@ -12,6 +12,6 @@ namespace Notification.Domain.Events
         public string EventName { get; set; } = string.Empty;
         public DateTime EventDate { get; set; }
         public string Location { get; set; } = string.Empty;
-        public List<TicketDownloadInfo> Tickets { get; set; } = [];
+        public List<TicketInfo> Tickets { get; set; } = [];
     }
 }

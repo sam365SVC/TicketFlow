@@ -45,7 +45,9 @@ services:
       - RabbitMq__Port=5672
       - RabbitMq__Username=guest
       - RabbitMq__Password=guest
-
+      # Variables para enviar correos electronicos
+      - EmailConfig__Email=${EMAILCONFIG__EMAIL}
+      - EmailConfig__PasswordApp=${EMAILCONFIG__PASSWORDAPP}
     depends_on:
       - ticketflow-nosql  # CORREGIDO: Nombre del servicio correspondiente
       - ticketflow-bus
