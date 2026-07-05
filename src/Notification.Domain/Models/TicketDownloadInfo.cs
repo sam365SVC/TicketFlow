@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Notification.Domain.Models
 {
-    public class TicketDownloadInfo
+    public record class TicketDownloadInfo
     {
-        public string? TicketCode { get; set; }
-        public string? ZoneName { get; set; }
-        public string? DownloadUrl { get; set; }
+        public string? TicketCode { get; init; }
+        public string? ZoneName { get; init; }
     }
 }

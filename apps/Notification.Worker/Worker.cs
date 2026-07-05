@@ -20,6 +20,11 @@ namespace Notification.Worker
                     await Task.Delay(5000, stoppingToken);
                 }
             }
+            // 🔥 NUEVO: Atrapamos la cancelación normal del sistema y la ignoramos
+            catch (TaskCanceledException)
+            {
+                logger.LogInformation("⚠️ El worker se está deteniendo porque el sistema solicitó un apagado.");
+            }
             catch (Exception e)
             {
                 logger.LogCritical(e, "❌ Fatal error connecting to the database or dependencies.");
