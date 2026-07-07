@@ -1,3 +1,4 @@
+using Booking.API.Infrastructure.Messaging;
 using Booking.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,8 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<BookingDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddBookingMessaging(builder.Configuration);
 
 var app = builder.Build();
 
