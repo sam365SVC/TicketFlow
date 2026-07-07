@@ -3,8 +3,7 @@ namespace Booking.Domain;
 public class User
 {
     public int Id { get; set; }
-    public int RoleId { get; set; }
-    public Role Role { get; set; } = null!;
+    public UserRole Role { get; set; }
     public int? CreatedBy { get; set; }
     public string FullName { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;

@@ -1,8 +1,8 @@
 namespace Booking.Domain;
 
-public class TicketType
+public enum TicketType
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
+    General,
+    VIP,
+    Premium
 }
