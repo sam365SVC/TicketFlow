@@ -17,8 +17,10 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .HasColumnName("booking_id")
             .IsRequired();
 
-        builder.Property(p => p.PaymentStatusId)
-            .HasColumnName("payment_status_id")
+        builder.Property(p => p.Status)
+            .HasColumnName("payment_status")
+            .HasConversion<string>()
+            .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(p => p.Amount)
@@ -48,9 +50,5 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .HasForeignKey(p => p.BookingId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(p => p.PaymentStatus)
-            .WithMany()
-            .HasForeignKey(p => p.PaymentStatusId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

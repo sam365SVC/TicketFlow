@@ -17,8 +17,10 @@ public class EventZoneConfiguration : IEntityTypeConfiguration<EventZone>
             .HasColumnName("event_id")
             .IsRequired();
 
-        builder.Property(z => z.TicketTypeId)
-            .HasColumnName("ticket_type_id")
+        builder.Property(z => z.TicketType)
+            .HasColumnName("ticket_type")
+            .HasConversion<string>()
+            .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(z => z.Price)
@@ -48,12 +50,7 @@ public class EventZoneConfiguration : IEntityTypeConfiguration<EventZone>
             .HasForeignKey(z => z.EventId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(z => z.TicketType)
-            .WithMany()
-            .HasForeignKey(z => z.TicketTypeId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasIndex(z => new { z.EventId, z.TicketTypeId })
+        builder.HasIndex(z => new { z.EventId, z.TicketType })
             .IsUnique()
             .HasDatabaseName("uq_event_zones_event_ticket_type");
     }

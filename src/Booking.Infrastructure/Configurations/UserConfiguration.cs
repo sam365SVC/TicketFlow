@@ -13,8 +13,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).HasColumnName("user_id");
 
-        builder.Property(u => u.RoleId)
-            .HasColumnName("role_id")
+        builder.Property(u => u.Role)
+            .HasColumnName("role")
+            .HasConversion<string>()
+            .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(u => u.CreatedBy)
@@ -65,11 +67,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UpdatedAt)
             .HasColumnName("updated_at")
             .IsRequired();
-
-        builder.HasOne(u => u.Role)
-            .WithMany()
-            .HasForeignKey(u => u.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<User>()
             .WithMany()

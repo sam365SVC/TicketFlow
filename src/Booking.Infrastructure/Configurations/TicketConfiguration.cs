@@ -17,8 +17,10 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
             .HasColumnName("booking_item_id")
             .IsRequired();
 
-        builder.Property(t => t.TicketStatusId)
-            .HasColumnName("ticket_status_id")
+        builder.Property(t => t.Status)
+            .HasColumnName("ticket_status")
+            .HasConversion<string>()
+            .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(t => t.TicketCode)
@@ -41,11 +43,6 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
             .WithMany(i => i.Tickets)
             .HasForeignKey(t => t.BookingItemId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(t => t.TicketStatus)
-            .WithMany()
-            .HasForeignKey(t => t.TicketStatusId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(t => t.TicketCode)
             .IsUnique()
