@@ -1,12 +1,10 @@
-﻿using Notification.Domain.Events;
-using Notification.Domain.Models;
+﻿using TicketFlow.Shared.Models;
+using TicketFlow.Shared.Events;
 using Notification.Infrastructure.Documents.Interface;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace Notification.Infrastructure.Documents
 {

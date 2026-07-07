@@ -1,10 +1,7 @@
-﻿using Notification.Domain.Events;
+﻿using TicketFlow.Shared.Events;
 using Notification.Domain.Models;
 using Notification.Infrastructure.Documents.Interface;
 using Notification.Infrastructure.Storage;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Notification.Infrastructure.Documents
 {
@@ -18,6 +15,8 @@ namespace Notification.Infrastructure.Documents
         {
             var uploadedTicketUrls = new List<TicketDownloadInfo>();
 
+            var expireDate = reservationEvent.EventDate.AddHours(4);
+
             foreach (var ticket in reservationEvent.Tickets)
             {
                 if (string.IsNullOrWhiteSpace(ticket.TicketCode)) continue;
@@ -26,7 +25,9 @@ namespace Notification.Infrastructure.Documents
 
                 var pdfBytes = ticketPdfGenerator.GeneratePdf(reservationEvent, ticket, qrBytes);
 
-                var ticketUrl = await s3Client.UploadTicketAsync(ticket.TicketCode, pdfBytes, cancellationToken);
+                string codeKey = $"tickets/{reservationEvent.EventName}-{ticket.TicketCode}.pdf";
+
+                var ticketUrl = await s3Client.UploadTicketAsync(codeKey,expireDate, pdfBytes, cancellationToken);
 
                 var dowloadTicket = new TicketDownloadInfo
                 {

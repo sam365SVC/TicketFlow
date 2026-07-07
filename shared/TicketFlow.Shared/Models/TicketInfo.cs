@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Notification.Domain.Models
+namespace TicketFlow.Shared.Models
 {
     public class TicketInfo
     {

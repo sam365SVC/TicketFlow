@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Notification.Domain.Events;
 using Notification.Domain.Models;
-using Notification.Infrastructure.Documents;
 using Notification.Infrastructure.Documents.Interface;
 using Notification.Infrastructure.Email.Interface;
 using Rebus.Handlers;
+using TicketFlow.Shared.Events;
 
 namespace Notification.Infrastructure.Consumers
 {
@@ -23,7 +22,7 @@ namespace Notification.Infrastructure.Consumers
             {
                 CustomerName = message.CustomerName,
                 EventName = message.EventName,
-                EventData = message.EventDate,
+                EventDate = message.EventDate.ToString("dd/MM/yyyy HH:mm"),
                 Tickets = ticketUrls
             };
 

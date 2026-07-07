@@ -8,7 +8,7 @@ namespace Notification.Domain.Models
     {
         public string? CustomerName { get; set; }
         public string? EventName { get; set; }
-        public DateTime EventData { get; set; }
+        public string? EventDate { get; set; }
         public List<TicketDownloadInfo> Tickets { get; set; } = [];
     }
 }

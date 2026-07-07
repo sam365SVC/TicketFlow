@@ -6,36 +6,44 @@ using MimeKit;
 using Notification.Domain.Models;
 using Notification.Infrastructure.Configurations;
 using Notification.Infrastructure.Email.Interface;
-
-using RazorEngineCore;
+using Scriban;
+using Scriban.Runtime;
 
 namespace Notification.Infrastructure.Email
 {
     public class EmailService(
         IOptions<EmailOptions> options,
-        ILogger<EmailService> logger,
-        IRazorEngine razorEngine
-    ): IEmailService
+        ILogger<EmailService> logger
+ 
+    ) : IEmailService
     {
         public async Task SendTicketEmailAsync(string toEmail, ReservationEmailModel model)
         {
-            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", "TicketTemplate.cshtml");
-            if (!File.Exists(templatePath))
-            {
-                throw new FileNotFoundException($"No se encontro la plantilla en: {templatePath}");
-            }
+            
 
-            string templateContent = await File.ReadAllTextAsync(templatePath);
+            var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", "TicketTemplate.html");
+            var templateText = await File.ReadAllTextAsync(templatePath);
 
-            var template = await razorEngine.CompileAsync(templateContent);
-            string htmlBody = await template.RunAsync(model);
+            // 2. Parseamos el texto con Scriban
+            var template = Template.Parse(templateText);
+
+            // 3. Configuramos el contexto para que conecte C# (PascalCase) con HTML (snake_case)
+            var context = new TemplateContext();
+            context.MemberRenamer = member => member.Name.ToLower();
+
+            var scriptObject = new ScriptObject();
+            scriptObject.Add("model", model);
+            context.PushGlobal(scriptObject);
+
+            // 4. Renderizamos la plantilla para obtener el string final
+            var htmlResult = await template.RenderAsync(context);
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("TicketFlow Oficial",options.Value.Email));
             message.To.Add(new MailboxAddress(model.CustomerName, toEmail));
             message.Subject = $"¡Entradas confirmadas para {model.EventName}! 🎉";
 
-            var bodyBuilder = new BodyBuilder { HtmlBody = htmlBody };
+            var bodyBuilder = new BodyBuilder { HtmlBody = htmlResult };
 
             message.Body = bodyBuilder.ToMessageBody();
 
@@ -49,6 +57,7 @@ namespace Notification.Infrastructure.Email
             if (logger.IsEnabled(LogLevel.Information))
             {
                 logger.LogInformation("✅ ¡Correo enviado exitosamente a {Email}!", toEmail);
+                logger.LogInformation("La fecha obtenida es: {fecha}", model.EventDate);
             }
         }
     }
