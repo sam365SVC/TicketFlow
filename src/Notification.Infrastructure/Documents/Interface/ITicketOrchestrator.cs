@@ -1,8 +1,5 @@
-﻿using Notification.Domain.Events;
-using Notification.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Notification.Domain.Models;
+using TicketFlow.Shared.Events;
 
 namespace Notification.Infrastructure.Documents.Interface
 {

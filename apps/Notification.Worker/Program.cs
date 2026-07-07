@@ -1,6 +1,6 @@
 
 using Microsoft.Extensions.Options;
-using Notification.Domain.Events;
+using TicketFlow.Shared.Events;
 using Notification.Infrastructure.Configurations;
 using Notification.Infrastructure.Consumers;
 using Notification.Infrastructure.Documents;
@@ -12,7 +12,12 @@ using Notification.Infrastructure.Storage;
 using Notification.Worker;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
-using Rebus.ServiceProvider;
+// 👇 1. AGREGA ESTE ENLACE DE ESPACIOS DE NOMBRES
+using QuestPDF.Infrastructure;
+
+// 👇 2. CONFIGURA LA LICENCIA GRATUITA AQUÍ (Antes de que empiece todo)
+QuestPDF.Settings.License = LicenseType.Community;
+
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -43,7 +48,6 @@ builder.Services.AddTransient<ITicketOrchestrator, TicketOrchestrator>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.Services.AddHostedService<Worker>();
-builder.Services.AddSingleton<RazorEngineCore.IRazorEngine, RazorEngineCore.RazorEngine>();
 
 var host = builder.Build();
 host.Run();

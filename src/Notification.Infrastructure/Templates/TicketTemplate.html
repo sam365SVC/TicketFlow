@@ -1,8 +1,7 @@
-﻿@model Notification.Domain.Models.ReservationEmailModel
-
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <style>
         body { font-family: Arial, sans-serif; color: #333333; line-height: 1.6; }
         .header { color: #2c3e50; }
@@ -17,40 +16,39 @@
     </style>
 </head>
 <body>
-    <h1 class="header">Reservation Confirmed! 🎉</h1>
+    <h1 class="header">¡Reservación Confirmada! 🎉</h1>
     
-    <p>Hello @Model.CustomerName,</p>
-    <p>Your payment was successful. Here are the details of your event:</p>
+    <p>Hola {{ model.customername }},</p>
+    <p>Tu pago se ha procesado con éxito. Aquí tienes los detalles de tu evento:</p>
     
     <div class="details-box">
-        <p><strong>Event:</strong> <span class="highlight">@Model.EventName</span></p>
-        <p><strong>Date:</strong> @Model.EventDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Evento:</strong> <span class="highlight">{{ model.eventname }}</span></p>
+        <p><strong>Fecha:</strong> {{ model.eventdate }}</p>
     </div>
 
-    <p>Here are your official tickets. You can download each one below:</p>
+    <p>A continuación, encontrarás tus entradas oficiales. Puedes descargar cada una de ellas aquí:</p>
     
     <table class="ticket-list">
         <thead>
             <tr>
-                <th>Ticket Code</th>
-                <th>Zone</th>
-                <th>Action</th>
+                <th>Código de Ticket</th>
+                <th>Zona / Asiento</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
-            @foreach(var ticket in Model.Tickets)
-            {
+            {{ for ticket in model.tickets }}
                 <tr>
-                    <td><strong>@ticket.TicketCode</strong></td>
-                    <td>@ticket.ZoneName</td>
+                    <td><strong>{{ ticket.ticketcode }}</strong></td>
+                    <td>{{ ticket.zonename }}</td>
                     <td>
-                        <a href="@ticket.DownloadUrl" class="btn-download">Download</a>
+                        <a href="{{ ticket.url }}" class="btn-download">Descargar</a>
                     </td>
                 </tr>
-            }
+            {{ end }}
         </tbody>
     </table>
     
-    <p><br>Enjoy the show!</p>
+    <p><br>¡Que disfrutes el espectáculo!</p>
 </body>
 </html>

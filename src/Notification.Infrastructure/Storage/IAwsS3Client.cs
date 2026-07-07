@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TicketFlow.Shared.Events;
 
 namespace Notification.Infrastructure.Storage
 {
@@ -13,6 +14,6 @@ namespace Notification.Infrastructure.Storage
         /// <param name="fileBytes">El contenido del archivo PDF en bytes</param>
         /// <param name="cancellationToken">Token para cancelar la operación si es necesario</param>
         /// <returns>La URL pública donde quedó alojado el archivo</returns>
-        Task<string> UploadTicketAsync(string ticketId, byte[] fileBytes, CancellationToken cancellationToken = default);
+        Task<string> UploadTicketAsync(string objectKey,DateTime expirationDate, byte[] fileBytes, CancellationToken cancellationToken = default);
     }
 }
