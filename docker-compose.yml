@@ -38,14 +38,16 @@ services:
       # 🚀 VARIABLES ENLAZADAS AL ARCHIVO .ENV:
       - AWS__Region=${AWS_REGION}
       - AWS__BucketName=${AWS_BUCKET_NAME}
-      - AWS__AccessKeyId=${AWS_ACCESS_KEY_ID}
-      - AWS__SecretAccessKey=${AWS_SECRET_ACCESS_KEY}
+      - AWS__AccessKey=${AWS_ACCESS_KEY_ID}      # <- Cambiado de AccessKeyId a AccessKey
+      - AWS__SecretKey=${AWS_SECRET_ACCESS_KEY}  # <- Cambiado de SecretAccessKey a SecretKey
       # 🎛️ NUEVAS: VARIABLES DE ENTORNO PARA RABBITMQ (Mapeadas de appsettings)
       - RabbitMq__Host=ticketflow-bus  # ⚠️ Asegúrate de que coincida con el nombre de tu servicio de RabbitMQ
       - RabbitMq__Port=5672
       - RabbitMq__Username=guest
       - RabbitMq__Password=guest
-
+      # Variables para enviar correos electronicos
+      - EmailConfig__Email=${EMAILCONFIG__EMAIL}
+      - EmailConfig__PasswordApp=${EMAILCONFIG__PASSWORDAPP}
     depends_on:
       - ticketflow-nosql  # CORREGIDO: Nombre del servicio correspondiente
       - ticketflow-bus

@@ -1,8 +1,8 @@
 namespace Booking.Domain;
 
-public class TicketStatus
+public enum TicketStatus
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
+    Valid,
+    Used,
+    Cancelled
 }

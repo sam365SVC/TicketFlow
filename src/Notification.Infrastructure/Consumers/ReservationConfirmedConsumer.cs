@@ -1,20 +1,37 @@
-﻿using Rebus.Handlers;
-
-using Microsoft.Extensions.Logging;
-using Notification.Domain.Events;
+﻿using Microsoft.Extensions.Logging;
+using Notification.Domain.Models;
+using Notification.Infrastructure.Documents.Interface;
+using Notification.Infrastructure.Email.Interface;
+using Rebus.Handlers;
+using TicketFlow.Shared.Events;
 
 namespace Notification.Infrastructure.Consumers
 {
-    public class ReservationConfirmedConsumer(ILogger<ReservationConfirmedConsumer> logger):IHandleMessages<ReservationConfirmedEvent>
+    public class ReservationConfirmedConsumer(
+        ILogger<ReservationConfirmedConsumer> logger,
+        ITicketOrchestrator ticketOrchestrator,
+        IEmailService emailService
+    ):IHandleMessages<ReservationConfirmedEvent>
     {
-        public Task Handle(ReservationConfirmedEvent message)
+        public async Task Handle(ReservationConfirmedEvent message)
         {
-            if (message != null && logger.IsEnabled(LogLevel.Information))
-            {
-                logger.LogInformation("Message received! Client: {Client} Event: {Event}", message.CustomerName, message.EventName);
-            }
+            // 1. El orquestador hace todo el trabajo sucio y nos devuelve las URLs de S3
+            List<TicketDownloadInfo> ticketUrls = await ticketOrchestrator.ProcessAndUploadTicketsAsync(message);
 
-            return Task.CompletedTask;
+            var emailModel = new ReservationEmailModel
+            {
+                CustomerName = message.CustomerName,
+                EventName = message.EventName,
+                EventDate = message.EventDate.ToString("dd/MM/yyyy HH:mm"),
+                Tickets = ticketUrls
+            };
+
+            await emailService.SendTicketEmailAsync(message.CustomerEmail, emailModel);
+
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("✅ ¡Proceso completado! Tickets generados y correo enviado a {Email}.", message.CustomerEmail);
+            }
         }
     }
 }

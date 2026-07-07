@@ -21,8 +21,10 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .HasColumnName("user_id")
             .IsRequired();
 
-        builder.Property(r => r.StatusId)
-            .HasColumnName("status_id")
+        builder.Property(r => r.Status)
+            .HasColumnName("status")
+            .HasConversion<string>()
+            .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(r => r.TotalAmount)
@@ -41,11 +43,6 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         builder.HasOne(r => r.Event)
             .WithMany(e => e.Reservations)
             .HasForeignKey(r => r.EventId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(r => r.Status)
-            .WithMany()
-            .HasForeignKey(r => r.StatusId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(r => r.User)

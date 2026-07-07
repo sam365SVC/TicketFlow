@@ -1,19 +1,29 @@
 
 using Microsoft.Extensions.Options;
-using Notification.Domain.Events;
+using TicketFlow.Shared.Events;
 using Notification.Infrastructure.Configurations;
 using Notification.Infrastructure.Consumers;
+using Notification.Infrastructure.Documents;
+using Notification.Infrastructure.Documents.Interface;
+using Notification.Infrastructure.Email;
+using Notification.Infrastructure.Email.Interface;
 using Notification.Infrastructure.Mongo.Data;
 using Notification.Infrastructure.Storage;
 using Notification.Worker;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
-using Rebus.ServiceProvider;
+// 👇 1. AGREGA ESTE ENLACE DE ESPACIOS DE NOMBRES
+using QuestPDF.Infrastructure;
+
+// 👇 2. CONFIGURA LA LICENCIA GRATUITA AQUÍ (Antes de que empiece todo)
+QuestPDF.Settings.License = LicenseType.Community;
+
 
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.Configure<AwsS3Options>(builder.Configuration.GetSection(AwsS3Options.SectionName));
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(RabbitMqOptions.SectionName));
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.SectionName));
 
 builder.Services.AutoRegisterHandlersFromAssemblyOf<ReservationConfirmedConsumer>();
 
@@ -32,8 +42,12 @@ builder.Services.AddRebus((configure, provider) =>
 
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddTransient<IAwsS3Client, AwsS3Client>();
+builder.Services.AddTransient<IQrGenerator, QrGenerator>();
+builder.Services.AddTransient<ITicketPdfGenerator, TicketPdfGenerator>();
+builder.Services.AddTransient<ITicketOrchestrator, TicketOrchestrator>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 builder.Services.AddHostedService<Worker>();
-//configuration rabbitMq
 
 var host = builder.Build();
 host.Run();

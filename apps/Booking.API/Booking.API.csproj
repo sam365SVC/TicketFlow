@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
     <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
@@ -15,9 +16,12 @@
     </PackageReference>
     <PackageReference Include="Rebus.RabbitMq" Version="10.1.1" />
     <PackageReference Include="Rebus.ServiceProvider" Version="10.7.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\shared\TicketFlow.Shared\TicketFlow.Shared.csproj" />
     <ProjectReference Include="..\..\src\Booking.Infrastructure\Booking.Infrastructure.csproj" />
   </ItemGroup>
 

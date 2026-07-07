@@ -1,17 +1,14 @@
-﻿using Notification.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using TicketFlow.Shared.Models;
 
-namespace Notification.Domain.Events
+namespace TicketFlow.Shared.Events
 {
-    public record class ReservationConfirmedEvent
+    public class ReservationConfirmedEvent
     {
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerEmail { get; set; } = string.Empty;
         public string EventName { get; set; } = string.Empty;
         public DateTime EventDate { get; set; }
         public string Location { get; set; } = string.Empty;
-        public List<TicketDownloadInfo> Tickets { get; set; } = [];
+        public List<TicketInfo> Tickets { get; set; } = [];
     }
 }
