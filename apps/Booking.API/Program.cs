@@ -1,9 +1,14 @@
 using System.Text;
+using Booking.API.Application.Authorization;
 using Booking.API.Infrastructure.Auth;
+using Booking.API.Infrastructure.Authorization;
 using Booking.API.Infrastructure.ExceptionHandling;
 using Booking.API.Infrastructure.Messaging;
+using Booking.API.Infrastructure.Seeding;
+using Booking.Domain;
 using Booking.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -61,6 +66,7 @@ builder.Services.AddDbContext<BookingDbContext>(options =>
 
 builder.Services.AddBookingMessaging(builder.Configuration);
 builder.Services.AddBookingAuthServices(builder.Configuration);
+builder.Services.Configure<AdminSeedOptions>(builder.Configuration.GetSection(AdminSeedOptions.SectionName));
 
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -82,9 +88,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             RoleClaimType = "role"
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(AuthorizationPolicies.RequireStaff, policy => policy.Requirements.Add(new MinimumRoleRequirement(UserRole.Staff)))
+    .AddPolicy(AuthorizationPolicies.RequireAdmin, policy => policy.Requirements.Add(new MinimumRoleRequirement(UserRole.Admin)));
+
+builder.Services.AddSingleton<IAuthorizationHandler, MinimumRoleHandler>();
 
 var app = builder.Build();
+
+// Seed idempotente del usuario root Admin (username/password: admin/admin). Corre en cada
+// arranque, incluido cada "docker compose up" - no depende de correr nada a mano.
+await AdminUserSeeder.SeedAsync(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

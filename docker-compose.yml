@@ -76,7 +76,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      - ASPNETCORE_ENVIRONMENT=Development
+      # 🚀 VARIABLES ENLAZADAS AL ARCHIVO .ENV (con default admin/admin si no hay .env):
+      - AdminSeed__Username=${ADMIN_USERNAME:-admin}
+      - AdminSeed__Email=${ADMIN_EMAIL:-admin@ticketflow.local}
+      - AdminSeed__Password=${ADMIN_PASSWORD:-admin}
     depends_on:
       - ticketflow-db
     networks:
