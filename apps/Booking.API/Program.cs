@@ -1,7 +1,10 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Booking.API.Application.Authorization;
 using Booking.API.Infrastructure.Auth;
 using Booking.API.Infrastructure.Authorization;
+using Booking.API.Infrastructure.Bookings;
+using Booking.API.Infrastructure.Events;
 using Booking.API.Infrastructure.ExceptionHandling;
 using Booking.API.Infrastructure.Messaging;
 using Booking.API.Infrastructure.Seeding;
@@ -17,7 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -66,6 +70,8 @@ builder.Services.AddDbContext<BookingDbContext>(options =>
 
 builder.Services.AddBookingMessaging(builder.Configuration);
 builder.Services.AddBookingAuthServices(builder.Configuration);
+builder.Services.AddBookingEventServices();
+builder.Services.AddBookingReservationServices();
 builder.Services.Configure<AdminSeedOptions>(builder.Configuration.GetSection(AdminSeedOptions.SectionName));
 
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
