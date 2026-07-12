@@ -7,8 +7,7 @@ public class Reservation
     public Event Event { get; set; } = null!;
     public int UserId { get; set; }
     public User User { get; set; } = null!;
-    public int StatusId { get; set; }
-    public BookingStatus Status { get; set; } = null!;
+    public BookingStatus Status { get; set; }
     public decimal TotalAmount { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
