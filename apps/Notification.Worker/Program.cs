@@ -14,6 +14,7 @@ using Rebus.Config;
 using Rebus.Routing.TypeBased;
 // 👇 1. AGREGA ESTE ENLACE DE ESPACIOS DE NOMBRES
 using QuestPDF.Infrastructure;
+using Notification.Infrastructure.Messaging.Interface;
 
 // 👇 2. CONFIGURA LA LICENCIA GRATUITA AQUÍ (Antes de que empiece todo)
 QuestPDF.Settings.License = LicenseType.Community;
@@ -41,6 +42,7 @@ builder.Services.AddRebus((configure, provider) =>
 });
 
 builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddSingleton<IMessageBusService, RabbitMqPublisherService>();
 builder.Services.AddTransient<IAwsS3Client, AwsS3Client>();
 builder.Services.AddTransient<IQrGenerator, QrGenerator>();
 builder.Services.AddTransient<ITicketPdfGenerator, TicketPdfGenerator>();
