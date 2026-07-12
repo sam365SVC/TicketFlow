@@ -2,6 +2,7 @@
 using Notification.Domain.Models;
 using Notification.Infrastructure.Documents.Interface;
 using Notification.Infrastructure.Email.Interface;
+using Notification.Infrastructure.Messaging.Interface;
 using Rebus.Handlers;
 using TicketFlow.Shared.Events;
 
@@ -10,7 +11,8 @@ namespace Notification.Infrastructure.Consumers
     public class ReservationConfirmedConsumer(
         ILogger<ReservationConfirmedConsumer> logger,
         ITicketOrchestrator ticketOrchestrator,
-        IEmailService emailService
+        IEmailService emailService,
+        IMessageBusService whatsappBus
     ):IHandleMessages<ReservationConfirmedEvent>
     {
         public async Task Handle(ReservationConfirmedEvent message)
@@ -27,6 +29,30 @@ namespace Notification.Infrastructure.Consumers
             };
 
             await emailService.SendTicketEmailAsync(message.CustomerEmail, emailModel);
+
+            if (!string.IsNullOrWhiteSpace(message.CustomerPhone))
+            {
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation("Phone number detec. Ready for send Whatsapp from {Phone}", message.CustomerPhone);
+                }
+                var whatsappModel = new ReservationWhatsappModel
+                {
+                    CustomerName = message.CustomerName,
+                    CustomerPhone = message.CustomerPhone,
+                    EventName = message.EventName,
+                    Tickets = ticketUrls
+                };
+                await whatsappBus.PublishWhatsappNotification(whatsappModel);
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation("✅ Message publuc success in queue Whatsapp.Worker");
+                }
+            }
+            if (string.IsNullOrWhiteSpace(message.CustomerEmail)&& string.IsNullOrWhiteSpace(message.CustomerPhone))
+            {
+                logger.LogError("⚠️ User don't send email or phone client ");
+            }
 
             if (logger.IsEnabled(LogLevel.Information))
             {

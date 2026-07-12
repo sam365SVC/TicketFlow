@@ -53,7 +53,21 @@ services:
       - ticketflow-bus
     networks:
       - ticketflow-network
-
+  whatsapp-worker:
+    build:
+      context: ./apps/Whatsapp.Worker
+      dockerfile: Dockerfile
+    container_name: ticketflow-whatsapp-worker
+    volumes:
+      # Esto asegura que la base de datos sqlite no se borre al apagar el contenedor
+      - ./apps/Whatsapp.Worker/data:/app/data
+    environment:
+      # Le pasamos la URL de conexión apuntando al servicio 'ticketflow-bus'
+      - RABBITMQ_URL=amqp://guest:guest@ticketflow-bus:5672/
+    depends_on:
+      - ticketflow-bus
+    networks:
+      - ticketflow-network
   # Bus de Eventos (Comunicación Asíncrona)
   ticketflow-bus:
     image: rabbitmq:3-management-alpine
